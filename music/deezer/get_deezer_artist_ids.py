@@ -32,15 +32,15 @@ def get_favorite_artists(user_id):
     Returns:
         list: List of favorite artist IDs.
     """
-    url = f'https://api.deezer.com/user/{user_id}/artists'
-    artists = []
-    limit = 25
-    offset = 0
+    url: str = f'https://api.deezer.com/user/{user_id}/artists'
+    artists: list[int] = []
+    limit: int = 25
+    offset: int = 0
     while True:
-        params = {'index': offset, 'limit': limit}
-        response = requests.get(url, params=params)
+        params: dict = {'index': offset, 'limit': limit}
+        response: requests.Response = requests.get(url, params=params)
         if response.status_code == 200:
-            data = response.json()
+            data: dict = response.json()
             artists.extend([artist['id'] for artist in data['data']])
             if 'next' not in data or not data['next']:
                 break
@@ -51,7 +51,7 @@ def get_favorite_artists(user_id):
     return artists
 
 
-def output_to_csv(data, filename):
+def output_to_csv(data: list[int], filename: str):
     """
     Write artist IDs to a CSV file.
 
@@ -69,9 +69,9 @@ if __name__ == "__main__":
     Retrieves favorite artists for a given user ID from the Deezer API
     and saves the artist IDs to a CSV file.
     """
-    user_id = os.getenv('DEEZER_USER_ID')  # Deezer user ID
-    output_file = 'config/deezer_artist_ids.csv'
-    artists = get_favorite_artists(user_id)
+    user_id: str = os.getenv('DEEZER_USER_ID')  # Deezer user ID
+    output_file: str = 'config/deezer_artist_ids.csv'
+    artists: list[int] = get_favorite_artists(user_id)
     output_to_csv(artists, output_file)
     print(f"{len(artists)} Deezer artist IDs saved to '{output_file}'")
 
